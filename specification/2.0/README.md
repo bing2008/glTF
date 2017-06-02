@@ -34,60 +34,62 @@ Copyright (C) 2013-2017 The Khronos Group Inc. All Rights Reserved. glTF is a tr
 # Contents 内容
 
 * [Introduction](#introduction) 介绍
-  * [Motivation](#motivation)
-  * [glTF Basics](#gltf-basics)
-  * [Design Goals](#design-goals)
-  * [Versioning](#versioning)
-  * [File Extensions and MIME Types](#file-extensions-and-mime-types)
-  * [JSON Encoding](#json-encoding)
-  * [URIs](#uris)
-* [Concepts](#concepts)
-  * [Asset](#asset)
-  * [Indices and Names](#indices-and-names)
-  * [Coordinate System and Units](#coordinate-system-and-units)
-  * [Scenes](#scenes)
-    * [Nodes and Hierarchy](#nodes-and-hierarchy)
-    * [Transformations](#transformations)
-  * [Binary Data Storage](#binary-data-storage)
-    * [Buffers and Buffer Views](#buffers-and-buffer-views)
-      * [GLB-stored Buffer](#glb-stored-buffer)
-    * [Accessors](#accessors)
-        * [Floating-Point Data](#floating-point-data)
-        * [Accessor Element Size](#accessor-element-size)
-        * [Sparse Accessors](#sparse-accessors)
-    * [Data Alignment](#data-alignment)   
-  * [Geometry](#geometry)
-    * [Meshes](#meshes)
-      * [Tangent-space definition](#tangent-space-definition)
-      * [Morph Targets](#morph-targets)
-    * [Skins](#skins)
-      * [Skinned Mesh Attributes](#skinned-mesh-attributes)
-      * [Joint Hierarchy](#joint-hierarchy)
-    * [Instantiation](#instantiation)
-  * [Texture Data](#texture-data)
-    * [Textures](#textures)
-    * [Images](#images)
-    * [Samplers](#samplers)
-  * [Materials](#materials)
-    * [Metallic-Roughness Material](#metallic-roughness-material)
-    * [Additional Maps](#additional-maps)
-    * [Alpha Coverage](#alpha-coverage)
-    * [Double Sided](#double-sided)
-    * [Default Material](#default-material)
-  * [Cameras](#cameras)
-    * [Projection Matrices](#projection-matrices)
-  * [Animations](#animations)
-  * [Specifying Extensions](#specifying-extensions)
-* [Properties Reference](#properties-reference)
-* [Acknowledgments](#acknowledgments)
-* [Appendix A: GLB File Format Specification](#appendix-a-glb-file-format-specification)
-* [Appendix B: Tangent Space Recalculation](#appendix-b-tangent-space-recalculation)
-* [Appendix C: BRDF Implementation](#appendix-c-brdf-implementation)
-* [Appendix D: Full Khronos Trademark Statement](#appendix-d-full-khronos-trademark-statement)
+  * [Motivation](#motivation) 动机
+  * [glTF Basics](#gltf-basics) glTF基础
+  * [Design Goals](#design-goals) 设计目标
+  * [Versioning](#versioning) 版本
+  * [File Extensions and MIME Types](#file-extensions-and-mime-types) 文件扩展名及MIME类型
+  * [JSON Encoding](#json-encoding) JSON 编码
+  * [URIs](#uris) URI
+* [Concepts](#concepts) 概念
+  * [Asset](#asset) 资产
+  * [Indices and Names](#indices-and-names) 索引和名称
+  * [Coordinate System and Units](#coordinate-system-and-units) 坐标系及单位
+  * [Scenes](#scenes) 场景
+    * [Nodes and Hierarchy](#nodes-and-hierarchy) node节点层级
+    * [Transformations](#transformations) 变换
+  * [Binary Data Storage](#binary-data-storage) 二进制数据存储
+    * [Buffers and Buffer Views](#buffers-and-buffer-views) 缓冲区和缓冲区视口
+      * [GLB-stored Buffer](#glb-stored-buffer) GLB-stored Buffer
+    * [Accessors](#accessors) 访问器
+        * [Floating-Point Data](#floating-point-data) 浮点数据
+        * [Accessor Element Size](#accessor-element-size) 访问器元素大小
+        * [Sparse Accessors](#sparse-accessors) 疏散访问器
+    * [Data Alignment](#data-alignment) 数据对齐
+  * [Geometry](#geometry) 几何体
+    * [Meshes](#meshes) 网格
+      * [Tangent-space definition](#tangent-space-definition) 切线空间定义
+      * [Morph Targets](#morph-targets) 变形目标
+    * [Skins](#skins) 皮肤
+      * [Skinned Mesh Attributes](#skinned-mesh-attributes) 皮肤网格属性
+      * [Joint Hierarchy](#joint-hierarchy) 关节层级
+    * [Instantiation](#instantiation) 实例化
+  * [Texture Data](#texture-data) 纹理数据
+    * [Textures](#textures) 纹理
+    * [Images](#images) 图片
+    * [Samplers](#samplers) 采样器
+  * [Materials](#materials) 材质
+    * [Metallic-Roughness Material](#metallic-roughness-material) 金属粗糙度材质
+    * [Additional Maps](#additional-maps) 附加贴图
+    * [Alpha Coverage](#alpha-coverage) Alpha覆盖
+    * [Double Sided](#double-sided) 双面
+    * [Default Material](#default-material) 默认材质
+  * [Cameras](#cameras) 相机
+    * [Projection Matrices](#projection-matrices) 投影矩阵
+  * [Animations](#animations) 动画
+  * [Specifying Extensions](#specifying-extensions) 指定扩展
+* [Properties Reference](#properties-reference) 属性参考
+* [Acknowledgments](#acknowledgments) 致谢
+* [Appendix A: GLB File Format Specification](#appendix-a-glb-file-format-specification) 附件A：GLF文件格式规范
+* [Appendix B: Tangent Space Recalculation](#appendix-b-tangent-space-recalculation) 附件B：切线空间重新计算
+* [Appendix C: BRDF Implementation](#appendix-c-brdf-implementation) 附件C：BRDF实现
+* [Appendix D: Full Khronos Trademark Statement](#appendix-d-full-khronos-trademark-statement) 附件D：完整Khronos商标
 
 # Introduction
 
 The GL Transmission Format (glTF) is an API-neutral runtime asset delivery format.  glTF bridges the gap between 3D content creation tools and modern graphics applications by providing an efficient, extensible, interoperable format for the transmission and loading of 3D content.
+
+GL传输格式（glTF）是API中立的运行时资产传递格式。 glTF通过为传输和加载3D内容提供高效，可扩展，可互操作的格式，弥合了3D内容创建工具和现代图形应用程序之间的差距。
 
 ## Motivation
 
@@ -95,11 +97,19 @@ The GL Transmission Format (glTF) is an API-neutral runtime asset delivery forma
 
 Traditional 3D modeling formats have been designed to store data for offline use, primarily to support authoring workflows on desktop systems. Industry-standard 3D interchange formats allow for sharing assets between different modeling tools, and within the content pipeline in general. However, neither of these types of formats is optimized for download speed or fast loading at runtime. Files tend to grow very large, and applications need to do a significant amount of processing to load such assets into GPU-accelerated applications.
 
+传统的3D建模格式旨在存储用于离线使用的数据，主要用于支持桌面系统上的创作工作流程。 行业标准的3D交换格式允许在不同的建模工具之间以及内容管道中共享资产。 然而，这些类型的格式都不会在运行时针对下载速度或快速加载进行优化。 文件往往会变得非常大，应用程序需要进行大量的处理才能将这些资源加载到GPU加速的应用程序中。
+
 Applications seeking high performance rarely load modeling formats directly; instead, they process models offline as part of a custom content pipeline, converting the assets into a proprietary format optimized for their runtime application.  This has led to a fragmented market of incompatible proprietary runtime formats and duplicated efforts in the content creation pipeline. 3D assets exported for one application cannot be reused in another application without going back to the original modeling, tool-specific source and performing another proprietary export step.
+
+寻求高性能的应用很少直接加载建模格式; 相反，他们将模型作为自定义内容管道的一部分进行脱机处理，将资产转换为为其运行时应用程序优化的专有格式。 这导致了不兼容的专有运行时格式的分散市场，并在内容创建流程中重复了努力。 导出为一个应用程序的3D资产不能在另一个应用程序中重复使用，而无需返回原始建模，特定于工具的源并执行另一个专有的导出步骤。
 
 With the advent of mobile- and web-based 3D computing, new classes of applications have emerged that require fast, dynamic loading of standardized 3D assets. Digital marketing solutions, e-commerce product visualizations, and online model-sharing sites are just a few of the connected 3D applications being built today using WebGL or OpenGL ES. Beyond the need for efficient delivery, many of these online applications can benefit from a standard, interoperable format to enable sharing and reuse of assets between users, between applications, and within heterogeneous, distributed content pipelines.
 
+随着移动和基于Web的3D计算的出现，出现了新类别的应用程序，需要快速，动态地加载标准化的3D资产。 数字营销解决方案，电子商务产品可视化和在线模型共享网站只是目前使用WebGL或OpenGL ES构建的连接3D应用程序中的一小部分。 除了需要高效的交付外，许多这些在线应用程序可以从标准的可互操作格式中获益，以实现用户之间，应用程序之间以及异构的分布式内容管道之间的资产共享和重用。
+
 glTF solves these problems by providing a vendor- and runtime-neutral format that can be loaded and rendered with minimal processing. The format combines an easily parseable JSON scene description with one or more binary files representing geometry, animations, and other rich data. Binary data is stored in such a way that it can be loaded directly into GPU buffers without additional parsing or other manipulation. Using this approach, glTF is able to faithfully preserve full hierarchical scenes with nodes, meshes, cameras, materials, and animations, while enabling efficient delivery and fast loading.
+
+glTF通过提供可以通过最少处理加载和呈现的供应商和运行时中立格式来解决这些问题。 该格式将一个易于解析的JSON场景描述与表示几何，动画和其他丰富数据的一个或多个二进制文件相结合。 二进制数据以这样的方式存储，即可以直接加载到GPU缓冲器中，而无需额外的解析或其他操作。 使用这种方法，glTF能够忠实地保存具有节点，网格，相机，材料和动画的完整分层场景，同时实现有效的传送和快速加载。
 
 ## glTF Basics
 
@@ -108,12 +118,20 @@ glTF solves these problems by providing a vendor- and runtime-neutral format tha
 glTF assets are JSON files plus supporting external data. Specifically, a glTF asset is represented by:
 
 * A JSON-formatted file (`.gltf`) containing a full scene description: node hierarchy, materials, cameras, as well as descriptor information for meshes, animations, and other constructs
+一个JSON格式文件（.gltf）包含完整场景描述：节点层次结构，材质，摄像头以及网格，动画和其他构造的描述符信息
+
 * Binary files (`.bin`) containing geometry and animation data, and other buffer-based data
+二进制文件(`.bin`) 包含几何及动画数据，以及其他基于缓冲区的数据
 * Image files (`.jpg`, `.png`, etc.) for textures
+纹理图片(`.jpg`, `.png`, etc.)
 
 Assets defined in other formats, such as images, may be stored in external files referenced via URI, stored side-by-side in GLB container, or embedded directly into the JSON using [data URIs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs).
 
+以其他格式定义的资产（如图像）可以存储在通过URI引用的外部文件中，并行存储在GLB容器中，或者使用[数据URI]直接嵌入到JSON中
+
 Valid glTF asset must specify its version.
+
+有效的glTF资产必须指定它的版本。
 
 <p align="center">
 <img src="figures/files.png" width="50%" />
@@ -125,30 +143,62 @@ Valid glTF asset must specify its version.
 
 glTF has been designed to meet the following goals:
 
+glTF旨在满足以下目标：
+
 * *Compact file sizes.* While web developers like to work with clear text as much as possible, clear text encoding is simply not practical for transmitting 3D data due to sheer size. The glTF JSON file itself is clear text, but it is compact and rapid to parse. All large data such as geometry and animations are stored in binary files that are much smaller than equivalent text representations.
+
+* *紧凑型文件大小* 虽然网页开发人员喜欢尽可能多地使用清晰的文字，但由于纯粹的大小，明文编码对于传输3D数据来说根本不实用。 glTF JSON文件本身就是明文，但是它是紧凑而快速的解析。 所有大数据（如几何和动画）都存储在比等效文本表示小得多的二进制文件中。
+
 * *Fast loading.* glTF data structures have been designed to mirror the GPU API data as closely as possible, both in the JSON and binary files, to reduce load times. For example, binary data for meshes could be viewed as JavaScript Typed Arrays and be loaded directly into GPU buffers with a simple data copy; no parsing or further processing is required.
+
+* *快速加载* glTF数据结构被设计成了尽可能接近地反映GPU API数据的形式，在JSON和二进制文件中，以减少加载时间。 例如，网格的二进制数据可以被视为JavaScript类型的数组，并且可以使用一个简单的数据拷贝直接加载到GPU缓冲区中; 不需要解析或进一步处理。
+
 * *Runtime-independence.* glTF makes no assumptions about the target application or 3D engine. glTF specifies no runtime behaviors other than rendering and animation.
+
+* *运行时中立*  glTF对目标应用程序或3D引擎不作任何假设。 glTF指定除了渲染和动画之外的运行时行为。
+
 * *Complete 3D scene representation.* Exporting single objects from a modeling package is not sufficient for many applications. Often, authors want to load entire scenes, including nodes, transformations, transform hierarchy, meshes, materials, cameras, and animations into their applications. glTF strives to preserve all of this information for use in the downstream application.
+* *完整3D场景表示* 从建模包导出单个对象对于许多应用程序来说是不够的。 通常，作者希望将整个场景（包括节点，变换，变换层次结构，网格物质，照相机和动画）加载到其应用程序中。 glTF努力保留下载应用程序中使用的所有信息。
+
 * *Extensibility.* While the initial base specification supports a rich feature set, there will be many opportunities for growth and improvement. glTF defines a mechanism that allows the addition of both general-purpose and vendor-specific extensions.
+
+* *可扩展性.* 虽然初始基本规范支持丰富的功能集，但是将有许多增长和改进的机会。 glTF定义了一种允许添加通用和供应商特定扩展的机制。
 
 The design of glTF takes a pragmatic approach. The format is meant to mirror the GPU APIs as closely as possible, but if it did only that, there would be no cameras, animations, or other features typically found in both modeling tools and runtime systems, and much semantic information would be lost in the translation. By supporting these common constructs, glTF content can not only load and render, but it can be immediately usable in a wider range of applications and require less duplication of effort in the content pipeline.
 
+glTF的设计采取务实的做法。 该格式旨在尽可能接近GPU API，但是如果只做到这一点，那么在建模工具和运行时系统中通常不会出现相机，动画或其他功能，并且在转换过程中会丢失很多语义信息。 通过支持这些常见结构，glTF内容不仅可以用于加载和渲染，而且可以在更广泛的应用中立即使用，并且在内容管道中需要较少的重复工作。
+
 The following are outside the scope of the initial design of glTF:
 
+以下内容在glTF初始设计的范围之外：
+
 * *glTF is not a streaming format.* The binary data in glTF is inherently streamable, and the buffer design allows for fetching data incrementally. But there are no other streaming constructs in the format, and no conformance requirements for an implementation to stream data versus downloading it in its entirety before rendering.
+* * glTF不是流式格式。* glTF中的二进制数据本质上是可流式传输的，缓冲区设计可以逐步提取数据。 但是格式中没有其他流媒体构造，并且在渲染之前不执行流式传输数据的实现，而不是完全下载数据。
+
 * *glTF is not intended to be human-readable,* though by virtue of being represented in JSON, it is developer-friendly.
+* * glTF不是要人为可读，*虽然凭借在JSON中的表示，它是开发人员友好的。
 
 Version 2.0 of glTF does not define compression for geometry and other rich data. However, the design team believes that compression is a very important part of a transmission standard, and there is already work underway to define compression extensions.
 
+glTF 2.0版不会为几何和其他丰富的数据定义压缩。 然而，设计团队认为压缩是传输标准中非常重要的一部分，并且已经有工作正在进行定义压缩扩展。
+
 > The 3D Formats Working Group is developing partnerships to define the codec options for geometry compression.  glTF defines the node hierarchy, materials, animations, and geometry, and will reference the external compression specs.
+
+> 3D格式工作组正在开发合作伙伴关系，以定义几何压缩的编解码器选项。 glTF定义了节点层次结构，材质，动画和几何，并将引用外部压缩规范。
 
 ## Versioning
 
 Any updates made to glTF in a minor version will be backwards and forwards compatible. Backwards compatibility will ensure that any client implementation that supports loading a glTF 2.x asset will also be able to load a glTF 2.0 asset. Forwards compatibility will allow a client implementation that only supports glTF 2.0 to load glTF 2.x assets while gracefully ignoring any new features it does not understand.
 
+对次要版本的glTF进行的任何更新都将向后兼容。 向后兼容性将确保支持加载glTF 2.x资产的任何客户端实现也将能够加载glTF 2.0资产。 向前兼容性将允许仅支持glTF 2.0的客户端实现加载glTF 2.x资产，同时优雅地忽略其不了解的任何新功能。
+
 A minor version update can introduce new features but will not change any previously existing behavior. Existing functionality can be deprecated in a minor version update, but it will not be removed. 
 
+次要版本更新可以引入新功能，但不会更改任何先前存在的行为。 现有功能可以在次要版本更新中被废弃，但不会被删除。
+
 Major version updates are not expected to be compatible with previous versions.
+
+主要版本更新不会与以前的版本兼容。
 
 ## File Extensions and MIME Types
 
