@@ -46,7 +46,7 @@ Copyright (C) 2013-2017 The Khronos Group Inc. All Rights Reserved. glTF is a tr
   * [Indices and Names](#indices-and-names) 索引和名称
   * [Coordinate System and Units](#coordinate-system-and-units) 坐标系及单位
   * [Scenes](#scenes) 场景
-    * [Nodes and Hierarchy](#nodes-and-hierarchy) node节点层级
+    * [Nodes and Hierarchy](#nodes-and-hierarchy) 节点和层级
     * [Transformations](#transformations) 变换
   * [Binary Data Storage](#binary-data-storage) 二进制数据存储
     * [Buffers and Buffer Views](#buffers-and-buffer-views) 缓冲区和缓冲区视口
@@ -201,12 +201,14 @@ Major version updates are not expected to be compatible with previous versions.
 主要版本更新不会与以前的版本兼容。
 
 ## File Extensions and MIME Types
+## 文件扩展名及MIME类型
 
 * `*.gltf` files use `model/gltf+json`
 * `*.bin` files use `application/octet-stream`
 * Texture files use the official `image/*` type based on the specific image format. For compatibility with modern web browsers, the following image formats are supported: `image/jpeg`, `image/png`.
 
-## JSON encoding
+## JSON encoding JSON
+## 编码
 
 To simplify client-side implementation, glTF has following restrictions on JSON format and encoding.
 
@@ -224,7 +226,8 @@ Clients are required to support only embedded resources and relative external re
 
 This allows the application to decide the best approach for delivery: if different assets share many of the same geometries, animations, or textures, separate files may be preferred to reduce the total amount of data requested. With separate files, applications can progressively load data and do not need to load data for parts of a model that are not visible. If an application cares more about single-file deployment, embedding data may be preferred even though it increases the overall size due to base64 encoding and does not support progressive or on-demand loading.
 
-# Concepts
+# Concepts 
+# 概念
 
 <p align="center">
 <img src="figures/dictionary-objects.png" /><br/>
@@ -232,6 +235,7 @@ The top-level arrays in a glTF asset.  See the <a href="#properties">Properties 
 </p>
 
 ## Asset
+## 资产
 
 Each glTF asset must have an `asset` property. In fact, it's the only required top-level property for JSON to be a valid glTF. The `asset` object must contain glTF version which specifies the target glTF version of the asset. Additionally, an optional `minVersion` property can be used to specify the minimum glTF version support required to load the asset. The `minVersion` property allows asset creators to specify a minimum version that a client implementation must support in order to load the asset. This is very similar to the `extensionsRequired` concept, where an asset should only be loaded if the client supports the specified extension. Additional metadata can be stored in optional properties such as `generator` or `copyright`.  For example,
 
@@ -249,6 +253,7 @@ Each glTF asset must have an `asset` property. In fact, it's the only required t
 
 
 ## Indices and Names
+## 索引和名称
 
 Entities of a glTF asset are referenced by their indices in corresponding arrays, e.g., a `bufferView` refers to a `buffer` by specifying the buffer's index in `buffers` array.  For example:
 
@@ -277,6 +282,7 @@ Whereas indices are used for internal glTF references, _names_ are used for appl
 For property names, glTF uses [camel case](http://en.wikipedia.org/wiki/CamelCase) `likeThis`. Camel case is a common naming convention in JSON and WebGL.
 
 ## Coordinate System and Units
+## 坐标系及单位
 
 glTF uses a right-handed coordinate system, that is, the cross product of X and Y yields Z. glTF defines the y axis as up.
 
@@ -288,6 +294,7 @@ Positive rotation is counterclockwise.
 
 
 ## Scenes
+## 场景
 
 The glTF asset contains zero or more *scenes*, the set of visual objects to render. Scenes are defined in a `scenes` array. An additional property, `scene` (note singular), identifies which of the scenes in the array is to be displayed at load time.
 
@@ -315,6 +322,7 @@ The following example defines a glTF asset with a single scene, that contains a 
 ```
 
 ### Nodes and Hierarchy
+### 节点和层级
 
 The glTF asset can define *nodes*, that is, the objects comprising the scene to render.
 
@@ -354,6 +362,7 @@ The node named `Car` has four children. Each of those nodes could in turn have i
 >For Version 2.0 conformance, the glTF node hierarchy is not a directed acyclic graph (DAG) or *scene graph*, but a strict tree. That is, no node may be a direct or indirect descendant of more than one node. This restriction is meant to simplify implementation and facilitate conformance. The restriction may be lifted later.
 
 ### Transformations
+### 变换
 
 Any node can define a local space transformation either by supplying a `matrix` property, or any of `translation`, `rotation`, and `scale`  properties (also known as *TRS properties*). `translation` and `scale` are `FLOAT_VEC3` values in the local coordinate system. `rotation` is a `FLOAT_VEC4` unit quaternion value, `(x, y, z, w)`, in the local coordinate system.
 
@@ -423,18 +432,29 @@ The next example defines the transformation for a node with attached camera usin
 ```
 
 ## Binary Data Storage
+## 二进制数据存储
 
 ### Buffers and Buffer Views
+### 缓冲区和缓冲区视口
 
 A *buffer* is data stored as a binary blob. The buffer can contain a combination of geometry, animation, and skins.
+缓冲区(buffer)是以二进制blob形式存储的数据。缓冲区可以包含几何，动画或皮肤。
 
 Binary blobs allow efficient creation of GPU buffers and textures since they require no additional parsing, except perhaps decompression. An asset can have any number of buffer files for flexibility for a wide array of applications.
 
+二进制Blob允许高效地创建GPU缓冲区和纹理，因为除了可能的解压外，它们不需要额外的解析。 资产可以拥有任何数量的缓冲区文件，以便灵活地应用于各种应用。
+
 Buffer data is little endian.
+
+缓冲区数据使用小端存储。
 
 All buffers are stored in the asset's `buffers` array.
 
+所有的缓冲区都存储在资源的`buffers`数组中。
+
 The following example defines a buffer. The `byteLength` property specifies the size of the buffer file. The `uri` property is the URI to the buffer data. Buffer data may also be stored within the glTF file as base64-encoded data and reference via data URI.
+
+以下示例定义缓冲区。 `byteLength`属性指定缓冲区文件的大小。 `uri`属性是缓冲区数据的URI。 缓冲区数据也可以通过数据URI存储在glTF文件中作为base64编码数据和引用。
 
 ```json
 {
@@ -449,11 +469,19 @@ The following example defines a buffer. The `byteLength` property specifies the 
 
 A *bufferView* represents a subset of data in a buffer, defined by an integer offset into the buffer specified in the `byteOffset` property and a `byteLength` property to specify length of the buffer view.
 
+缓冲区视口(bufferView)表示一个在缓冲区中的数据的子集，用`byteOffset`属性定义在buffer中的整数偏移量，用`byteLength`属性指定缓冲区视口的长度。
+
 When a buffer view contain vertex indices or attributes, they must be its only content, i.e., it's invalid to have more than one kind of data in the same buffer view.
+
+当缓冲区视口包含顶点索引或属性时，他们必须是它的唯一内容，比如：在同一个缓冲区视口中定义多于一种类型的数据是无效的。
 
 > **Implementation Note:** This allows a runtime to upload buffer view data to the GPU without any additional processing. When `bufferView.target` is defined, runtime must use it to determine data usage, otherwise it could be inferred from mesh' accessor objects.
 
+实现注意：这允许运行时（DX或OpenGL）将缓冲区视图上传数据到GPU，而无需任何额外的处理。 当定义bufferView.target时，运行时必须使用它来确定数据使用，否则可以从网格的访问对象中推断出。
+
 The following example defines two buffer views: the first is an ELEMENT_ARRAY_BUFFER, which holds the indices for an indexed triangle set, and the second is an ARRAY_BUFFER that holds the vertex data for the triangle set.
+
+以下示例定义了两个缓冲区视口：第一个是ELEMENT_ARRAY_BUFFER，它保存索引三角形集合的索引，第二个是保存三角形集合的顶点数据的ARRAY_BUFFER。
 
 ```json
 {
@@ -477,11 +505,18 @@ The following example defines two buffer views: the first is an ELEMENT_ARRAY_BU
 
 Buffer view could have `byteStride` property. It means byte-distance between consequential elements. This field  is defined only for buffer views that contain vertex attributes.
 
+缓冲区视口可以具有`byteStride`属性。 这意味着后续元素之间的字节距离。 此字段仅限于包含顶点属性的缓冲区视口。
+
 Buffers and buffer views do not contain type information. They simply define the raw data for retrieval from the file. Objects within the glTF file (meshes, skins, animations) access buffers or buffer views via *accessors*.
 
+缓冲区和缓冲区视图不包含类型信息。 它们只是简单地定义原始数据以便从文件中检索。 glTF文件（网格，皮肤，动画）中的对象通过访问器访问缓冲区或缓冲区视图。
+
 #### GLB-stored Buffer
+#### GLB方式存储的缓冲区
 
 glTF asset could use GLB file container to pack all resources into one file. glTF Buffer referring to GLB-stored `BIN` chunk, must have `buffer.uri` property undefined, and it must be the first element of `buffers` array. In the following example, the first buffer objects refers to GLB-stored data, while the second points to external resource:
+
+glTF资产可以使用GLB文件容器将所有资源打包到一个文件中。 指向GLB存储的“BIN”块的glTF缓冲区必须具有undefined的“buffer.uri”属性，它必须是“buffers”数组的第一个元素。 在下面的例子中，第一个缓冲区对象是指GLB存储的数据，而第二个指向外部资源：
 
 ```json
 {
@@ -500,14 +535,24 @@ glTF asset could use GLB file container to pack all resources into one file. glT
 See [Appendix A](#appendix-a-glb-file-format-specification) for details on GLB File Format.
 
 ### Accessors
+### 访问器
 
 All large data for meshes, skins, and animations is stored in buffers and retrieved via accessors.
 
+网格，皮肤和动画等所有大数据都存储在缓冲区(buffers)中，并通过访问器(accessors)检索。
+
 An *accessor* defines a method for retrieving data as typed arrays from within a `bufferView`. The accessor specifies a component type (e.g. `5126 (GL_FLOAT)`) and a data type (e.g. `VEC3`), which when combined define the complete data type for each array element. The accessor also specifies the location and size of the data within the `bufferView` using the properties `byteOffset` and `count`. The latter specifies the number of elements within the `bufferView`, *not* the number of bytes. Elements could be, e.g., vertex indices, vertex attributes, animation keyframes, etc.
+
+访问器(accessor)定义了一种方法，用于从缓冲区视口(bufferView)中获取带类型的数组数据，访问器定义了一个组件类型(如:`5126 (GL_FLOAT)`)和一个数据类型(如:`VEC3`),这两者合起来定义了每个数组元素的数据类型。访问器还使用`byteOffset`和`count`属性指定在`bufferView`内使用数据的位置和大小。后一个属性(count)指定了在`bufferView`内的元素数量，而不是字节数。元素可以是，如顶点索引，顶点属性，动画关键帧等。
 
 All accessors are stored in the asset's `accessors` array.
 
+所有访问器都存储在资源的`accessors`数组中。
+
 The following fragment shows two accessors, the first is a scalar accessor for retrieving a primitive's indices, and the second is a 3-float-component vector accessor for retrieving the primitive's position data.
+
+如下的段落展示了两个访问器，第一个是一个用于检索图元索引(primitive's indices)的标量访问器，第二个是用于检索图元位置数据的3浮点分量向量访问器。
+
 
 ```json
 {
@@ -547,14 +592,22 @@ The following fragment shows two accessors, the first is a scalar accessor for r
 ```
 
 #### Floating-Point Data
+#### 浮点数据
 
 Data of `5126 (GL_FLOAT)` componentType must use IEEE-754 single precision format. 
 
+浮点组件类型数据必须使用IEEE-754单精度格式。
+
 Values of `NaN`, `+Infinity`, and `-Infinity` are not allowed.
 
+`Nan`,`+Infinity`和`-Infinity`值不被允许。
+
 #### Accessor Element Size
+#### 访问器元素大小
 
 The following tables can be used to compute the size of element accessible by accessor.
+
+可以使用下表来计算访问器访问的元素大小。
 
 | `componentType` | Size in bytes |
 |:---------------:|:-------------:|
@@ -597,15 +650,26 @@ For example:
 In this accessor, the `componentType` is `5126` (FLOAT), so each component is four bytes.  The `type` is `"VEC3"`, so there are three components.  The size of each element is 12 bytes (`4 * 3`).
 
 #### Sparse Accessors
+#### 疏散访问器
 
 Sparse encoding of arrays is often more memory-efficient than dense encoding when describing incremental changes with respect to a reference array.
+当描述相对于引用数组的增量更改时，数组的稀疏编码通常比密集编码更具有内存效率。
+
 This is often the case when encoding morph targets (it is, in general, more efficient to describe a few displaced vertices in a morph target than transmitting all morph target vertices).
+
+编码变形目标（通常情况下，更有效地描述变形目标中的几个位移顶点，而不是传输所有变形目标顶点）通常是这种情况。
 
 glTF 2.0 extends the accessor structure to enable efficient transfer of sparse arrays.
 Similarly to a standard accessor, a sparse accessor initializes an array of typed elements from data stored in a `bufferView` . On top of that, a sparse accessor includes a `sparse` dictionary describing the elements that deviate from their initialization value. The `sparse` dictionary contains the following mandatory properties:
 - `count`: number of displaced elements.
 - `indices`: strictly increasing array of integers of size `count` and specific `componentType` that stores the indices of those elements that deviate from the initialization value.
 - `values`: array of displaced elements corresponding to the indices in the `indices` array.
+
+glTF 2.0扩展了访问器结构，以实现稀疏数组的有效传输。
+类似于标准访问器，稀疏访问器从存储在“bufferView”中的数据初始化类型化元素的数组。 除此之外，一个稀疏的访问器包括一个描述偏离初始化值的元素的“稀疏”字典。 “稀疏”字典包含以下必需属性：
+- “count”：流离失所者数。
+- “indices”：严格增加大小“count”的整数数组和特定的“componentType”，它们存储那些偏离初始化值的元素的索引。
+- “values”：与“indices”数组中的索引相对应的移位元素的数组。
 
 The following fragment shows an example of `sparse` accessor with 10 elements deviating from the initialization array.
 
@@ -640,6 +704,7 @@ A sparse accessor `min` and `max` properties correspond, respectively, to the mi
 When nor `sparse`, neither `bufferView` is defined, `min` and `max` properties could have any values. This is intended for use cases when binary data is supplied by external means (e.g., via extensions).
 
 #### Data Alignment
+#### 数据对齐
 
 The offset of an `accessor` into a `bufferView` (i.e., `accessor.byteOffset`) and the offset of an `accessor` into a `buffer` (i.e., `accessor.byteOffset + bufferView.byteOffset`) must be a multiple of the size of the accessor's component type.
 
@@ -684,10 +749,12 @@ The size of the accessor component type is two bytes (the `componentType` is uns
 
 
 ## Geometry
+## 几何体
 
 Any node can contain one mesh, defined in its `mesh` property. Mesh can be skinned using a information provided in referenced `skin` object. Mesh can have morph targets.
 
 ### Meshes
+### 网格
 
 In glTF, meshes are defined as arrays of *primitives*. Primitives correspond to the data required for GPU draw calls. Primitives specify one or more `attributes`, corresponding to the vertex attributes used in the draw calls. Indexed primitives also define an `indices` property. Attributes and indices are defined as references to accessors containing corresponding data. Each primitive also specifies a material and a primitive type that corresponds to the GPU primitive type (e.g., triangle set).
 
@@ -747,6 +814,7 @@ Valid accessor type and component type for each attribute semantic property are 
 > **Implementation note:** When normals and tangents are specified, implementations should compute the bitangent by taking the cross product of the normal and tangent xyz vectors and multiplying against the w component of the tangent: `bitangent = cross(normal, tangent.xyz) * tangent.w`
 
 #### Morph Targets
+#### 变形目标
 
 Morph Targets are defined by extending the Mesh concept.
 
@@ -795,6 +863,7 @@ The following example extends the Mesh defined in the previous example to a morp
 After applying morph targets to vertex positions and normals, tangent space may need to be recalculated. See [Appendix B](#appendix-b-tangent-space-recalculation) for details.
 
 ### Skins
+### 皮肤
 
 All skins are stored in the `skins` array of the asset. Each skin is defined by the `inverseBindMatrices` property (which points to an accessor with IBM data), used to bring coordinates being skinned into the same space as each joint; and a `joints` array property that lists the nodes indices used as joints to animate the skin. The order of joints is defined in the `skin.joints` array and it must match the order of `inverseBindMatrices` data. The `skeleton` property points to node that is the root of a joints hierarchy. 
 
@@ -816,6 +885,7 @@ All skins are stored in the `skins` array of the asset. Each skin is defined by 
 ```
 
 #### Skinned Mesh Attributes
+#### 皮肤网格属性
 
 The mesh for a skin is defined with vertex attributes that are used in skinning calculations in the vertex shader. The `JOINTS_0` attribute data contains the indices of the joints from corresponding `joints` array that should affect the vertex. The `WEIGHTS_0` attribute data defines the weights indicating how strongly the joint should influence the vertex. The following mesh skin defines `JOINTS_0` and `WEIGHTS_0` vertex attributes for a triangle mesh primitive:
 
@@ -849,6 +919,7 @@ The number of joints that influence one vertex is limited to 4, so referenced ac
 * **`WEIGHTS_0`**: `FLOAT`, or normalized `UNSIGNED_BYTE`, or normalized `UNSIGNED_SHORT`
 
 #### Joint Hierarchy
+#### 关节层级
 
 The joint hierarchy used for controlling skinned mesh pose is simply the glTF node hierarchy, with each node designated as a joint. The following example defines a joint hierarchy of two joints.
 
@@ -857,6 +928,7 @@ The joint hierarchy used for controlling skinned mesh pose is simply the glTF no
 For more details of vertex skinning, refer to [glTF Overview](figures/gltfOverview-0.2.0.png).
 
 ### Instantiation
+### 实例化
 
 A mesh is instantiated by `node.mesh` property. The same mesh could be used by many nodes, which could have different transformations. For example:
 
@@ -939,10 +1011,12 @@ A skin is instanced within a node using a combination of the node's `mesh` and `
 ```
 
 ## Texture Data
+## 纹理数据
 
 glTF separates texture access into three distinct types of objects: Textures, Images, and Samplers.
 
 ### Textures
+### 纹理
 
 All textures are stored in the asset's `textures` array. A texture is defined by an image resource, denoted by the `source` property and a sampler index (`sampler`).
 
@@ -960,6 +1034,7 @@ All textures are stored in the asset's `textures` array. A texture is defined by
 > **Implementation Note** glTF 2.0 supports only 2D textures.
 
 ### Images
+### 图片
 
 Images referred to by textures are stored in the `images` array of the asset. 
 
@@ -992,6 +1067,7 @@ Any colorspace information (such as ICC profiles, intents, etc) from PNG or JPEG
 > **Implementation Note:** This increases portability of an asset, since not all image decoding libraries fully support custom color conversions. To achieve correct rendering, WebGL runtimes must disable such conversions by setting `UNPACK_COLORSPACE_CONVERSION_WEBGL` flag to `NONE`.
 
 ### Samplers
+### 采样器
 
 Samplers are stored in the `samplers` array of the asset. Each sampler specifies filter and wrapping options corresponding to the GL types. The following example defines a sampler with linear mag filtering, linear mipmap min filtering, and repeat wrapping in S and T.
 
@@ -1018,12 +1094,14 @@ Samplers are stored in the `samplers` array of the asset. Each sampler specifies
 > * Has a minification filter (`minFilter`) that uses mipmapping (`NEAREST_MIPMAP_NEAREST`, `NEAREST_MIPMAP_LINEAR`, `LINEAR_MIPMAP_NEAREST`, or `LINEAR_MIPMAP_LINEAR`).
 
 ## Materials
+## 材质
 
 glTF defines materials using a common set of parameters that are based on widely used material representations from Physically-Based Rendering (PBR). Specifically, glTF uses the metallic-roughness material model. Using this declarative representation of materials enables a glTF file to be rendered consistently across platforms. 
 
 <p><img src="figures/materials.png" /></p>
 
-### Metallic-Roughness Material 
+### Metallic-Roughness Material
+### 金属粗糙度材质
 
 All parameters related to the metallic-roughness material model are defined under the `pbrMetallicRoughness` property of `material` object. The following example shows how a material like gold can be defined using the metallic-roughness parameters: 
 
@@ -1071,7 +1149,8 @@ The following equations show how to calculate bidirectional reflectance distribu
 
 All implementations should use the same calculations for the BRDF inputs. Implementations of the BRDF itself can vary based on device performance and resource constraints. See [Appendix C](#appendix-c-brdf-implementation) for more details on the BRDF calculations.
 
-### Additional Maps
+### Additional Maps 
+### 附加贴图
 
 The material definition also provides for additional maps that can also be used with the metallic-roughness material model as well as other material models which could be provided via glTF extensions.
 
@@ -1120,6 +1199,7 @@ The following examples shows a material that is defined using `pbrMetallicRoughn
 >| Emissive  | Model with lights will not be lit. For example, the headlights of a car model will be off instead of on. |
 
 ### Alpha Coverage
+### Alpha 覆盖
 
 The `alphaMode` property defines how the alpha value of the main factor and texture should be interpreted. The alpha value is defined in the `baseColor` for metallic-roughness material model. 
 
@@ -1136,14 +1216,16 @@ The `alphaMode` property defines how the alpha value of the main factor and text
 >* `BLEND` - Support for this mode varies. There is no perfect and fast solution that works for all cases. Implementations should try to achieve the correct blending output for as many situations as possible. Whether depth value is written or whether to sort is up to the implementation. For example, implementations can discard pixels which have zero or close to zero alpha value to avoid sorting issues.
 
 ### Double Sided
+### 双面
 
 The `doubleSided` property specifies whether the material is double sided. When this value is false, back-face culling is enabled. When this value is true, back-face culling is disabled and double sided lighting is enabled. The back-face must have its normals reversed before the lighting equation is evaluated.
 
 ### Default Material
+### 默认材质
 
 The default material, used when a mesh does not specify a material, is defined to be a material with no properties specified. All the default values of [`material`](#reference-material) apply. Note that this material does not emit light and will be black unless some lighting is present in the scene.
 
-## Cameras
+## Cameras 相机
 
 A camera defines the projection matrix that transforms from view to clip coordinates. The projection can be perspective or orthographic. Cameras are contained in nodes and thus can be transformed. Their world-space transformation matrix is used for calculating view-space transformation.
 
@@ -1180,6 +1262,7 @@ The following example defines two perspective cameras with supplied values for Y
 ```
 
 ### Projection Matrices
+### 投影矩阵
 
 Runtimes are expected to use the following projection matrices.
 
@@ -1210,6 +1293,7 @@ where
 - `n` equals `camera.orthographic.znear`.
 
 ## Animations
+## 动画
 
 glTF supports articulated and skinned animation via key frame animations of nodes' transforms. Key frame data is stored in buffers and referenced in animations using accessors.
 glTF 2.0 also supports animation of instantiated Morph Targets in a similar fashion.
@@ -1377,7 +1461,7 @@ When Morph Target animation keyframe data lies within `[-1.0, +1.0]` range, it c
 | Unsigned Short         |`f = c / 65535.0`|`c = round(f * 65535.0)`|
 | Signed Short           |`f = max(c / 32767.0, -1.0)`|`c = round(f * 32767.0)`|
 
-## Specifying Extensions
+## Specifying Extensions 指定扩展
 
 glTF defines an extension mechanism that allows the base format to be extended with new capabilities. Any glTF object can have an optional `extensions` property, as in the following example:
 
@@ -1419,6 +1503,7 @@ All glTF extensions required to load and/or render an asset must be listed in th
 For more information on glTF extensions, consult the [extensions registry specification](../extensions/README.md).
 
 # Properties Reference
+# 属性参考
 
 # Objects
 * [`accessor`](#reference-accessor)
@@ -3477,7 +3562,7 @@ Application-specific data.
 * **Required**: No
 
 
-# Acknowledgments
+# Acknowledgments 致谢
 * Sarah Chow, Cesium
 * Tom Fili, Cesium
 * Darryl Gough
@@ -3501,18 +3586,22 @@ Application-specific data.
 * Corentin Wallez, Google
 * Alex Wood, Analytical Graphics, Inc
 
-# Appendix A: GLB File Format Specification
+# Appendix A: GLB File Format Specification 
+附件A：GLB文件格式规范
 
 See [GLB_FORMAT.md](GLB_FORMAT.md).
 
-# Appendix B: Tangent Space Recalculation
+# Appendix B: Tangent Space Recalculation 
+附件B：切线空间重新计算
 
 **TODO**
 
-# Appendix C: BRDF Implementation
+# Appendix C: BRDF Implementation 
+附件C：BRDF实现
 
 **TODO**
 
-# Appendix D: Full Khronos Trademark Statement
+# Appendix D: Full Khronos Trademark Statement 
+附件D：完整Khronos商标
 
 Copyright (C) 2013-2017 The Khronos Group Inc. All Rights Reserved. This specification is protected by copyright laws and contains material proprietary to the Khronos Group, Inc. It or any components may not be reproduced, republished, distributed, transmitted, displayed, broadcast, or otherwise exploited in any manner without the express prior written permission of Khronos Group. You may use this specification for implementing the functionality therein, without altering or removing any trademark, copyright or other notice from the specification, but the receipt or possession of this specification does not convey any rights to reproduce, disclose, or distribute its contents, or to manufacture, use, or sell anything that it may describe, in whole or in part. Khronos Group grants express permission to any current Promoter, Contributor or Adopter member of Khronos to copy and redistribute UNMODIFIED versions of this specification in any fashion, provided that NO CHARGE is made for the specification and the latest available update of the specification for any version of the API is used whenever possible. Such distributed specification may be reformatted AS LONG AS the contents of the specification are not changed in any way. The specification may be incorporated into a product that is sold as long as such product includes significant independent work developed by the seller. A link to the current version of this specification on the Khronos Group website should be included whenever possible with specification distributions. Khronos Group makes no, and expressly disclaims any, representations or warranties, express or implied, regarding this specification, including, without limitation, any implied warranties of merchantability or fitness for a particular purpose or non-infringement of any intellectual property. Khronos Group makes no, and expressly disclaims any, warranties, express or implied, regarding the correctness, accuracy, completeness, timeliness, and reliability of the specification. Under no circumstances will the Khronos Group, or any of its Promoters, Contributors or Members or their respective partners, officers, directors, employees, agents, or representatives be liable for any damages, whether direct, indirect, special or consequential damages for lost revenues, lost profits, or otherwise, arising from or in connection with these materials. Khronos, Vulkan, SYCL, SPIR, WebGL, EGL, COLLADA, StreamInput, OpenVX, OpenKCam, glTF, OpenKODE, OpenVG, OpenWF, OpenSL ES, OpenMAX, OpenMAX AL, OpenMAX IL and OpenMAX DL are trademarks and WebCL is a certification mark of The Khronos Group Inc. OpenCL is a trademark of Apple Inc. and OpenGL and OpenML are registered trademarks and the OpenGL ES and OpenGL SC logos are trademarks of Silicon Graphics International used under license by Khronos. All other product names, trademarks, and/or company names are used solely for identification and belong to their respective owners.
